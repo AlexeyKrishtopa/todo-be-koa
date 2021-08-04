@@ -1,33 +1,65 @@
 const Todo = require('./Todo')
-// const User = require('../users/User')
+const User = require('../users/User')
 
 class TodoRepository {
   async getAllTodos(userId) {
     const todos = await Todo.find({ user: userId })
     return todos
   }
-  async getOneTodo(todoId) {
-    const todo = await Todo.findById(todoId)
-    if (!todo) {
-      throw new Error(`todo with id: ${todoId} does not exist`)
+  async getOneTodo(id, userId) {
+    const newTodo = await Todo.findOne({ _id: id, user: userId })
+    if (!newTodo) {
+      throw new Error(`todo with id: ${id} dosn't exist`)
     }
-    return todo
-  }
-  async createTodo(todo) {
-    const newTodo = await Todo.create(todo)
     return newTodo
   }
-  async updateTodo(todoId, todo) {
-    const updatedTodo = await Todo.findByIdAndUpdate(todoId, todo)
+  async createTodo(todo, userId) {
+    console.log(userId)
+    const newTodo = await Todo.create({
+      description: todo.description,
+      completed: todo.completed,
+      sort: todo.sort,
+      user: userId,
+    })
+
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { todos: newTodo._id } },
+      { new: true, useFindAndModify: false }
+    )
+
+    return newTodo
+  }
+  async updateTodo(id, todo, userId) {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      {
+        description: todo.description,
+        completed: todo.completed,
+        sort: todo.sort,
+        user: userId,
+      },
+      {
+        new: true,
+      }
+    )
+
     if (!updatedTodo) {
-      throw new Error(`todo with id: ${todoId} does not exist`)
+      throw new Error(`todo with id: ${id} dosn't exist`)
     }
     return updatedTodo
   }
-  async deleteTodo(todoId) {
-    const deletedTodo = await Todo.findByIdAndDelete(todoId)
+  async deleteTodo(id, userId) {
+    const deletedTodo = await Todo.findByIdAndDelete(id)
+
+    await User.findByIdAndUpdate(
+      userId,
+      { $pull: { todos: id } },
+      { new: true, useFindAndModify: true }
+    )
+
     if (!deletedTodo) {
-      throw new Error(`todo with id: ${todoId} does not exist`)
+      throw new Error(`todo with id: ${id} dosn't exist`)
     }
     return deletedTodo
   }

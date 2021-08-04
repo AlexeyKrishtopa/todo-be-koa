@@ -12,7 +12,7 @@ class UsersController {
   async signup(ctx, next) {
     try {
       let reqBody = ctx.request.body
-      const { login, password } = reqBody
+      const { login, password } = JSON.parse(reqBody)
 
       if (!(login && password)) {
         throw new Error('incorect register data')
@@ -37,7 +37,7 @@ class UsersController {
   async signin(ctx, next) {
     try {
       let reqBody = ctx.request.body
-      const { login, password } = reqBody
+      const { login, password } = JSON.parse(reqBody)
 
       const authenticatedUser = await usersService.signin({
         login: login,
@@ -70,7 +70,7 @@ class UsersController {
       let reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
-      const updatedUser = await usersService.updateUser(userId, reqBody)
+      const updatedUser = await usersService.updateUser(userId, JSON.parse(reqBody))
 
       ctx.body = updatedUser
 
@@ -127,7 +127,7 @@ class UsersController {
       return next()
     } catch (error) {
       ctx.body = { message: error.message, status: 400 }
-      
+
       return next()
     }
   }

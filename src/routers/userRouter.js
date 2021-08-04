@@ -1,40 +1,41 @@
 const Router = require('koa-router')
 const { reqLoggerMiddleware } = require('../middleware/reqLoggerMiddleware')
 const { resLoggerMiddleware } = require('../middleware/resLoggerMiddleware')
+const { authMiddleware } = require('../middleware/authMiddleware')
 const userController = require('../users/userController')
 
 const userRouter = new Router()
 
 userRouter
   .post(
-    '/signin',
+    '/api/user/signin',
     reqLoggerMiddleware,
     userController.signin,
     resLoggerMiddleware
   )
   .post(
-    '/signup',
-    
+    '/api/user/signup',
     reqLoggerMiddleware,
     userController.signup,
     resLoggerMiddleware
   )
   .post(
-    '/refresh-token',
-    
+    '/api/user/refresh-token',
     reqLoggerMiddleware,
     userController.refreshTokens,
     resLoggerMiddleware
   )
   .get(
-    '/user',
+    '/api/user',
     reqLoggerMiddleware,
+    authMiddleware,
     userController.getUser,
     resLoggerMiddleware
   )
   .put(
-    '/user',
+    '/api/user',
     reqLoggerMiddleware,
+    authMiddleware,
     userController.updateUser,
     resLoggerMiddleware
   )

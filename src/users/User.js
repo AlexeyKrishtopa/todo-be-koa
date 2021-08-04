@@ -9,6 +9,7 @@ const User = mongoose.Schema(
     age: { type: String, default: '' },
     phone: { type: String, default: '' },
     mail: { type: String, default: '' },
+    imgSrc: { type: String, default: '' },
   },
   { versionKey: false }
 )

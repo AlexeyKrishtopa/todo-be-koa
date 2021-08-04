@@ -18,7 +18,6 @@ const authMiddleware = (ctx, next) => {
     }
 
     ctx.payload = payload
-
     return next()
   } catch (error) {
     ctx.body = { message: `${error}`, statusCode: 401 }

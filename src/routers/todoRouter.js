@@ -8,35 +8,35 @@ const todoRouter = new Router()
 
 todoRouter
   .get(
-    '/todos',
+    '/api/todos',
     reqLoggerMiddleware,
     authMiddleware,
     todoController.getAllTodos,
     resLoggerMiddleware
   )
   .get(
-    '/todos/:id',
+    '/api/todos/:id',
     reqLoggerMiddleware,
     authMiddleware,
     todoController.getOneTodo,
     resLoggerMiddleware
   )
   .post(
-    '/todos',
+    '/api/todos',
     reqLoggerMiddleware,
     authMiddleware,
     todoController.createTodo,
     resLoggerMiddleware
   )
   .put(
-    '/todos/:id',
+    '/api/todos/:id',
     reqLoggerMiddleware,
     authMiddleware,
     todoController.updateTodo,
     resLoggerMiddleware
   )
   .delete(
-    '/todos/:id',
+    '/api/todos/:id',
     reqLoggerMiddleware,
     authMiddleware,
     todoController.deleteTodo,
