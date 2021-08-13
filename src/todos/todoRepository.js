@@ -70,6 +70,18 @@ class TodoRepository {
     }
     return deletedTodo
   }
+  async deleteCompletedTodos(userId) {
+    await Todo.deleteMany({ user: userId, isCompleted: true })
+    const todos = await Todo.find({ user: userId })
+
+    const todosIds = todos.map((todo) => todo._id)
+
+    await User.findByIdAndUpdate(
+      userId,
+      { $set: { todos: todosIds } },
+      { new: true, useFindAndModify: true }
+    )
+  }
 }
 
 module.exports = new TodoRepository()

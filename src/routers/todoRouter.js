@@ -49,5 +49,12 @@ todoRouter
     todoController.deleteTodo,
     resLoggerMiddleware
   )
+  .delete(
+    '/api/todos/clearCompleted',
+    reqLoggerMiddleware,
+    authMiddleware,
+    todoController.deleteCompletedTodos,
+    resLoggerMiddleware
+  )
 
 module.exports = { todoRouter }

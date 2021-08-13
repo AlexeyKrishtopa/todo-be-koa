@@ -94,7 +94,10 @@ class TodoController {
       const reqBody = JSON.parse(ctx.request.body)
       const userId = ctx.payload.userId
 
-      const todos = await todoService.updateTodosCompleted(reqBody.isCompleted, userId)
+      const todos = await todoService.updateTodosCompleted(
+        reqBody.isCompleted,
+        userId
+      )
 
       ctx.body = {
         payload: {
@@ -121,6 +124,24 @@ class TodoController {
         payload: {
           dto: todo,
         },
+        status: 200,
+      }
+
+      return next()
+    } catch (error) {
+      ctx.body = { message: error.message, status: 400 }
+
+      return next()
+    }
+  }
+  async deleteCompletedTodos(ctx, next) {
+    try {
+      const userId = ctx.payload.userId
+
+      await todoService.deleteCompletedTodos(userId)
+
+      ctx.body = {
+        message: 'completed was removed',
         status: 200,
       }
 

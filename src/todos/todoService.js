@@ -18,12 +18,18 @@ class TodoService {
     return updatedTodo
   }
   async updateTodosCompleted(isCompleted, userId) {
-    const updatedTodos = await todoRepository.updateTodosCompleted(isCompleted, userId)
+    const updatedTodos = await todoRepository.updateTodosCompleted(
+      isCompleted,
+      userId
+    )
     return updatedTodos
   }
   async deleteTodo(todoId, userId) {
     const deletedTodo = await todoRepository.deleteTodo(todoId, userId)
     return deletedTodo
+  }
+  async deleteCompletedTodos(userId) {
+    await todoRepository.deleteCompletedTodos(userId)
   }
 }
 
