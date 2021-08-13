@@ -17,7 +17,7 @@ class TodoRepository {
     console.log(userId)
     const newTodo = await Todo.create({
       description: todo.description,
-      completed: todo.completed,
+      isCompleted: todo.isCompleted,
       sort: todo.sort,
       user: userId,
     })
@@ -35,7 +35,7 @@ class TodoRepository {
       id,
       {
         description: todo.description,
-        completed: todo.completed,
+        isCompleted: todo.isCompleted,
         sort: todo.sort,
         user: userId,
       },
@@ -48,6 +48,13 @@ class TodoRepository {
       throw new Error(`todo with id: ${id} dosn't exist`)
     }
     return updatedTodo
+  }
+  async updateTodosCompleted(isCompleted, userId) {
+    await Todo.updateMany({ user: userId }, { $set: { isCompleted } })
+
+    const updatedTodos = await Todo.find({ user: userId })
+
+    return updatedTodos
   }
   async deleteTodo(id, userId) {
     const deletedTodo = await Todo.findByIdAndDelete(id)

@@ -89,6 +89,27 @@ class TodoController {
       return next()
     }
   }
+  async updateTodosCompleted(ctx, next) {
+    try {
+      const reqBody = JSON.parse(ctx.request.body)
+      const userId = ctx.payload.userId
+
+      const todos = await todoService.updateTodosCompleted(reqBody.isCompleted, userId)
+
+      ctx.body = {
+        payload: {
+          list: todos,
+        },
+        status: 200,
+      }
+
+      return next()
+    } catch (error) {
+      ctx.body = { message: error.message, status: 400 }
+
+      return next()
+    }
+  }
   async deleteTodo(ctx, next) {
     try {
       const todoId = ctx.params.id

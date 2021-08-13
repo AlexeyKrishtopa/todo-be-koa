@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 const Koa = require('koa')
 const mongoose = require('mongoose')
+const json = require('koa-json')
 const { todoRouter } = require('./routers/todoRouter')
 const { userRouter } = require('./routers/userRouter')
 const { imgRouter } = require('./routers/imgRouter')
@@ -13,6 +14,7 @@ dotenv.config()
 const app = new Koa()
 
 app.use(cors())
+app.use(json())
 app.use(bodyParser())
 app.use(todoRouter.routes()).use(todoRouter.allowedMethods())
 app.use(userRouter.routes()).use(userRouter.allowedMethods())

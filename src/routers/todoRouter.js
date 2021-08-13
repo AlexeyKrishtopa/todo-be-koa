@@ -35,6 +35,13 @@ todoRouter
     todoController.updateTodo,
     resLoggerMiddleware
   )
+  .put(
+    '/api/todos/updateCompleted',
+    reqLoggerMiddleware,
+    authMiddleware,
+    todoController.updateTodosCompleted,
+    resLoggerMiddleware
+  )
   .delete(
     '/api/todos/:id',
     reqLoggerMiddleware,
