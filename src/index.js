@@ -2,6 +2,7 @@
 const Koa = require('koa')
 const mongoose = require('mongoose')
 const json = require('koa-json')
+const logger = require('koa-logger')
 const { todoRouter } = require('./routers/todoRouter')
 const { userRouter } = require('./routers/userRouter')
 const cors = require('@koa/cors')
@@ -12,6 +13,7 @@ dotenv.config()
 
 const app = new Koa()
 
+app.use(logger())
 app.use(cors())
 app.use(json())
 app.use(bodyParser())

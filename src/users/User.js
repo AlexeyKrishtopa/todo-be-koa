@@ -4,6 +4,7 @@ const User = mongoose.Schema(
     login: { type: String, required: true, uniqe: true },
     password: { type: String, require: true },
     todos: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Todo' }],
+    refreshTokens: [{ type: mongoose.Schema.Types.ObjectId, ref: 'RefreshToken' }],
     firstName: { type: String, default: '' },
     secondName: { type: String, default: '' },
     age: { type: String, default: '' },

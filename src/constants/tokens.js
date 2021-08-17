@@ -6,7 +6,7 @@ const tokens = {
   },
   refresh: {
     type: 'refresh',
-    expiresIn: '1m',
+    expiresIn: '5m',
   },
 }
 

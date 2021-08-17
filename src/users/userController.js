@@ -1,4 +1,5 @@
 const usersService = require('./userService')
+const refreshTokenService = require('../refreshTokens/refreshTokenService')
 const {
   genereteAccessToken,
   genereteRefreshToken,
@@ -56,6 +57,9 @@ class UsersController {
       const accessToken = genereteAccessToken(authenticatedUser._id)
       const refreshToken = genereteRefreshToken(authenticatedUser._id)
 
+      // RefreshTokenService.appendToken(authenticatedUser._id, refreshToken)
+      await refreshTokenService.appendToken(authenticatedUser._id, refreshToken)
+
       ctx.body = {
         payload: {
           accessToken,
@@ -71,6 +75,7 @@ class UsersController {
       return next()
     }
   }
+  // async signout(ctx, next) {}
   async updateUser(ctx, next) {
     try {
       let reqBody = ctx.request.body
@@ -105,7 +110,24 @@ class UsersController {
         throw new Error('Must be refresh jwt, but was received other')
       }
 
+      const isValidToken = await refreshTokenService.isValidToken(
+        payload.userId,
+        refreshToken
+      )
+
+      if (!isValidToken) {
+        const error = new Error('Invalid refreshToken')
+        error.status = 401
+        throw error
+      }
+
       const refreshedTokens = refreshTokens(payload.userId)
+
+      await refreshTokenService.replaceToken(
+        payload.userId,
+        refreshToken,
+        refreshedTokens.refreshToken
+      )
 
       ctx.body = {
         payload: {
