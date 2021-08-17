@@ -36,7 +36,7 @@ todoRouter
     todoController.deleteTodo
   )
   .delete(
-    '/api/todos/clearCompleted',
+    '/api/clearCompletedTodos',
     authMiddleware,
     todoController.deleteCompletedTodos
   )

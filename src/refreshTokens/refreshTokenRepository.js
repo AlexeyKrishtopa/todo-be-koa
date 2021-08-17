@@ -14,20 +14,14 @@ class RefreshTokenRepository {
       { new: true, useFindAndModify: false }
     )
   }
-  
-  async removeTokens(userId) {
-    const RefreshToken = await RefreshToken.deleteMany()
 
-    await User.findByIdAndUpdate(
-      userId,
-      { $push: { todos: RefreshToken._id } },
-      { new: true, useFindAndModify: false }
-    )
+  async removeTokens(userId) {
+    await RefreshToken.deleteMany({ user: userId })
   }
 
   async isValidToken(userId, refreshToken) {
     const token = await RefreshToken.findOne({ refreshToken, user: userId })
-    
+
     return token ? true : false
   }
 

@@ -5,6 +5,10 @@ class RefreshTokenService {
     await refreshTokenRepository.appendToken(userId, refreshToken)
   }
 
+  async removeTokens(userId) {
+    await refreshTokenRepository.removeTokens(userId)
+  }
+
   async isValidToken(userId, refreshToken) {
     const isValidToken = await refreshTokenRepository.isValidToken(
       userId,

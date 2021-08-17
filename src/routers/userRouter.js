@@ -27,5 +27,10 @@ userRouter
     authMiddleware,
     userController.updateUser
   )
+  .delete(
+    '/api/user/signout',
+    authMiddleware,
+    userController.signout
+  )
 
 module.exports = { userRouter }

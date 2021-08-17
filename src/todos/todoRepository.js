@@ -71,6 +71,7 @@ class TodoRepository {
     return deletedTodo
   }
   async deleteCompletedTodos(userId) {
+    
     await Todo.deleteMany({ user: userId, isCompleted: true })
     const todos = await Todo.find({ user: userId })
 

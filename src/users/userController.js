@@ -10,9 +10,9 @@ const jwt = require('jsonwebtoken')
 const tokens = require('../constants/tokens')
 
 class UsersController {
-  async signup(ctx, next) {
+  async signup(ctx) {
     try {
-      let reqBody = ctx.request.body
+      let reqBody = JSON.parse(ctx.request.body)
       const { login, password } = reqBody
 
       if (!(login && password)) {
@@ -26,24 +26,22 @@ class UsersController {
         password: hashPassword,
       })
 
-      ctx.body = {
+      ctx.body = JSON.stringify({
         payload: {
           newUser,
         },
         status: 200,
-      }
-
-      return next()
+      })
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: 400 })
+        JSON.stringify({ message: error.message, status: error.status || 400 })
       )
     }
   }
-  async signin(ctx, next) {
+  async signin(ctx) {
     try {
-      let reqBody = ctx.request.body
+      let reqBody = JSON.parse(ctx.request.body)
       const { login, password } = reqBody
 
       const authenticatedUser = await usersService.signin({
@@ -57,28 +55,39 @@ class UsersController {
       const accessToken = genereteAccessToken(authenticatedUser._id)
       const refreshToken = genereteRefreshToken(authenticatedUser._id)
 
-      // RefreshTokenService.appendToken(authenticatedUser._id, refreshToken)
       await refreshTokenService.appendToken(authenticatedUser._id, refreshToken)
 
-      ctx.body = {
+      ctx.body = JSON.stringify({
         payload: {
           accessToken,
           refreshToken,
         },
         status: 200,
-      }
-
-      return next()
+      })
     } catch (error) {
-      ctx.body = { message: error.message, status: error.status || 404 }
-
-      return next()
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: error.status || 400 })
+      )
     }
   }
-  // async signout(ctx, next) {}
-  async updateUser(ctx, next) {
+  async signout(ctx) {
     try {
-      let reqBody = ctx.request.body
+      const userId = ctx.payload.userId
+
+      await refreshTokenService.removeTokens(userId)
+
+      ctx.body = JSON.stringify({ message: 'tokens removed', status: 200 })
+    } catch (error) {
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: error.status || 400 })
+      )
+    }
+  }
+  async updateUser(ctx) {
+    try {
+      let reqBody = JSON.parse(ctx.request.body)
       const userId = ctx.payload.userId
 
       const updatedUser = await usersService.updateUser(
@@ -87,17 +96,16 @@ class UsersController {
       )
 
       ctx.body = updatedUser
-
-      return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: error.status || 400 })
+      )
     }
   }
-  async refreshTokens(ctx, next) {
+  async refreshTokens(ctx) {
     try {
-      let reqBody = ctx.request.body
+      let reqBody = JSON.parse(ctx.request.body)
       const { refreshToken } = reqBody
 
       if (!refreshToken) {
@@ -129,33 +137,38 @@ class UsersController {
         refreshedTokens.refreshToken
       )
 
-      ctx.body = {
+      ctx.body = JSON.stringify({
         payload: {
-          refreshedTokens,
+          ...refreshedTokens,
         },
         status: 200,
-      }
-
-      return next()
+      })
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      if (error.message === 'jwt expired') {
+        error.status = 401
+      }
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: error.status || 400 })
+      )
     }
   }
-  async getUser(ctx, next) {
+  async getUser(ctx) {
     try {
       const userId = ctx.payload.userId
       const user = await usersService.getUser(userId)
 
-      ctx.body = {
+      ctx.body = JSON.stringify({
         payload: {
           dto: user,
         },
         status: 200,
-      }
-
-      return next()
+      })
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: error.status || 400 })
+      )
     }
   }
 }

@@ -2,11 +2,11 @@ const tokens = {
   secret: 'Andrew',
   access: {
     type: 'access',
-    expiresIn: '15s',
+    expiresIn: '10m',
   },
   refresh: {
     type: 'refresh',
-    expiresIn: '5m',
+    expiresIn: '48h',
   },
 }
 
