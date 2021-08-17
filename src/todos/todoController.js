@@ -16,9 +16,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async getOneTodo(ctx, next) {
@@ -37,9 +35,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async createTodo(ctx, next) {
@@ -58,9 +54,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async updateTodo(ctx, next) {
@@ -84,14 +78,12 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async updateTodosCompleted(ctx, next) {
     try {
-      const reqBody = JSON.parse(ctx.request.body)
+      const reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
       const todos = await todoService.updateTodosCompleted(
@@ -108,9 +100,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async deleteTodo(ctx, next) {
@@ -129,9 +119,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async deleteCompletedTodos(ctx, next) {
@@ -147,9 +135,7 @@ class TodoController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
 }

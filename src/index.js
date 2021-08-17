@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const json = require('koa-json')
 const { todoRouter } = require('./routers/todoRouter')
 const { userRouter } = require('./routers/userRouter')
-const { imgRouter } = require('./routers/imgRouter')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-body-parser')
 const dotenv = require('dotenv')
@@ -18,7 +17,6 @@ app.use(json())
 app.use(bodyParser())
 app.use(todoRouter.routes()).use(todoRouter.allowedMethods())
 app.use(userRouter.routes()).use(userRouter.allowedMethods())
-app.use(imgRouter.routes()).use(imgRouter.allowedMethods())
 
 const startApp = async () => {
   try {

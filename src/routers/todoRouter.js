@@ -1,6 +1,4 @@
 const Router = require('koa-router')
-const { reqLoggerMiddleware } = require('../middleware/reqLoggerMiddleware')
-const { resLoggerMiddleware } = require('../middleware/resLoggerMiddleware')
 const todoController = require('../todos/todoController')
 const { authMiddleware } = require('../middleware/authMiddleware')
 
@@ -9,52 +7,38 @@ const todoRouter = new Router()
 todoRouter
   .get(
     '/api/todos',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.getAllTodos,
-    resLoggerMiddleware
+    todoController.getAllTodos
   )
   .get(
     '/api/todos/:id',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.getOneTodo,
-    resLoggerMiddleware
+    todoController.getOneTodo
   )
   .post(
     '/api/todos',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.createTodo,
-    resLoggerMiddleware
+    todoController.createTodo
   )
   .put(
     '/api/todos/:id',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.updateTodo,
-    resLoggerMiddleware
+    todoController.updateTodo
   )
   .put(
     '/api/todos/updateCompleted',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.updateTodosCompleted,
-    resLoggerMiddleware
+    todoController.updateTodosCompleted
   )
   .delete(
     '/api/todos/:id',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.deleteTodo,
-    resLoggerMiddleware
+    todoController.deleteTodo
   )
   .delete(
     '/api/todos/clearCompleted',
-    reqLoggerMiddleware,
     authMiddleware,
-    todoController.deleteCompletedTodos,
-    resLoggerMiddleware
+    todoController.deleteCompletedTodos
   )
 
 module.exports = { todoRouter }

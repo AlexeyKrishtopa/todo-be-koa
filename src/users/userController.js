@@ -12,7 +12,7 @@ class UsersController {
   async signup(ctx, next) {
     try {
       let reqBody = ctx.request.body
-      const { login, password } = JSON.parse(reqBody)
+      const { login, password } = reqBody
 
       if (!(login && password)) {
         throw new Error('incorect register data')
@@ -25,19 +25,25 @@ class UsersController {
         password: hashPassword,
       })
 
-      ctx.body = newUser
+      ctx.body = {
+        payload: {
+          newUser,
+        },
+        status: 200,
+      }
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 404 }
-
-      return next()
+      ctx.throw(
+        error.status || 400,
+        JSON.stringify({ message: error.message, status: 400 })
+      )
     }
   }
   async signin(ctx, next) {
     try {
       let reqBody = ctx.request.body
-      const { login, password } = JSON.parse(reqBody)
+      const { login, password } = reqBody
 
       const authenticatedUser = await usersService.signin({
         login: login,
@@ -57,10 +63,10 @@ class UsersController {
         },
         status: 200,
       }
-      
+
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 404 }
+      ctx.body = { message: error.message, status: error.status || 404 }
 
       return next()
     }
@@ -70,7 +76,10 @@ class UsersController {
       let reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
-      const updatedUser = await usersService.updateUser(userId, JSON.parse(reqBody))
+      const updatedUser = await usersService.updateUser(
+        userId,
+        JSON.parse(reqBody)
+      )
 
       ctx.body = updatedUser
 
@@ -107,9 +116,7 @@ class UsersController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 404 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
   async getUser(ctx, next) {
@@ -126,9 +133,7 @@ class UsersController {
 
       return next()
     } catch (error) {
-      ctx.body = { message: error.message, status: 400 }
-
-      return next()
+      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
     }
   }
 }
