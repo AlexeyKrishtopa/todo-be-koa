@@ -13,17 +13,11 @@ class TodoRepository {
     }
     return newTodo
   }
-  async createTodo(todo, userId) {
-    console.log(userId)
-    const newTodo = await Todo.create({
-      description: todo.description,
-      isCompleted: todo.isCompleted,
-      sort: todo.sort,
-      user: userId,
-    })
+  async createTodo(todo) {
+    const newTodo = await Todo.create(todo)
 
     await User.findByIdAndUpdate(
-      userId,
+      newTodo.user,
       { $push: { todos: newTodo._id } },
       { new: true, useFindAndModify: false }
     )

@@ -9,8 +9,19 @@ class TodoService {
     const todo = await todoRepository.getOneTodo(todoId, userId)
     return todo
   }
-  async createTodo(todo, userId) {
-    const newTodo = await todoRepository.createTodo(todo, userId)
+  async createTodo(description, userId) {
+    const todos = await todoRepository.getAllTodos(userId)
+
+    const todo = {
+      isCompleted: false,
+      description,
+      sort: todos.length
+        ? todos.sort((a, b) => a.sort - b.sort)[todos.length - 1].sort + 1
+        : 1,
+      user: userId,
+    }
+
+    const newTodo = await todoRepository.createTodo(todo)
     return newTodo
   }
   async updateTodo(todoId, todo, userId) {

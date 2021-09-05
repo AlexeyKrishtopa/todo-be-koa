@@ -12,7 +12,7 @@ const tokens = require('../constants/tokens')
 class UsersController {
   async signup(ctx) {
     try {
-      let reqBody = JSON.parse(ctx.request.body)
+      let reqBody = ctx.request.body
       const { login, password } = reqBody
 
       if (!(login && password)) {
@@ -41,7 +41,7 @@ class UsersController {
   }
   async signin(ctx) {
     try {
-      let reqBody = JSON.parse(ctx.request.body)
+      let reqBody = ctx.request.body
       const { login, password } = reqBody
 
       const authenticatedUser = await usersService.signin({
@@ -87,15 +87,17 @@ class UsersController {
   }
   async updateUser(ctx) {
     try {
-      let reqBody = JSON.parse(ctx.request.body)
+      const reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
-      const updatedUser = await usersService.updateUser(
-        userId,
-        JSON.parse(reqBody)
-      )
+      const updatedUser = await usersService.updateUser(userId, reqBody)
 
-      ctx.body = updatedUser
+      ctx.body = JSON.stringify({
+        payload: {
+          dto: updatedUser,
+        },
+        status: 200,
+      })
     } catch (error) {
       ctx.throw(
         error.status || 400,
@@ -105,7 +107,7 @@ class UsersController {
   }
   async refreshTokens(ctx) {
     try {
-      let reqBody = JSON.parse(ctx.request.body)
+      let reqBody = ctx.request.body
       const { refreshToken } = reqBody
 
       if (!refreshToken) {

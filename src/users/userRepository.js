@@ -1,4 +1,9 @@
 const User = require('./User')
+const defaultAvatarSrc = require('../constants/defaultAvatarSrc')
+
+const { Pantry } = require('pantry-cloud')
+
+console.log(Pantry)
 
 class UsersRepository {
   async signup(user) {
@@ -8,7 +13,7 @@ class UsersRepository {
       throw new Error('User alredy exist')
     }
 
-    const newUser = await User.create(user)
+    const newUser = await User.create({ ...user, imgSrc: defaultAvatarSrc })
 
     return newUser
   }
@@ -22,6 +27,8 @@ class UsersRepository {
     return authenticatedUser
   }
   async updateUser(userId, user) {
+    console.log(user.imgSrc)
+
     const updatedUser = await User.findByIdAndUpdate(userId, user, {
       new: true,
     })

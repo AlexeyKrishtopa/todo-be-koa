@@ -20,16 +20,21 @@
   "dependencies": {
     "@google-cloud/storage": "^5.12.0",
     "@koa/cors": "^3.1.0",
+    "async-busboy": "^1.1.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "googleapis": "^83.0.0",
+    "http": "0.0.1-security",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-body-parser": "^1.1.2",
     "koa-json": "^2.0.2",
     "koa-logger": "^3.2.1",
+    "koa-multer": "^1.0.2",
     "koa-router": "^10.0.0",
     "mongoose": "^5.13.3",
-    "multer": "^1.4.2"
+    "multer": "^1.4.2",
+    "pantry-cloud": "0.0.10",
+    "socket.io": "^4.2.0"
   }
 }

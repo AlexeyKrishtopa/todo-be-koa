@@ -26,7 +26,7 @@ todoRouter
     todoController.updateTodo
   )
   .put(
-    '/api/todos/updateCompleted',
+    '/api/updateTodosCompleted',
     authMiddleware,
     todoController.updateTodosCompleted
   )

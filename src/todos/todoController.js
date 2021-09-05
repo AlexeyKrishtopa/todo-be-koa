@@ -3,6 +3,8 @@ const todoService = require('./todoService')
 class TodoController {
   async getAllTodos(ctx) {
     try {
+      // ctx.throw(400, { message: 'GG', status: 400 })
+
       const userId = ctx.payload.userId
 
       const todos = await todoService.getAllTodos(userId)
@@ -36,10 +38,12 @@ class TodoController {
   }
   async createTodo(ctx) {
     try {
-      const reqBody = JSON.parse(ctx.request.body)
+      const reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
-      const todo = await todoService.createTodo(reqBody, userId)
+      // ctx.throw(400, { message: 'GG', status: 400 })
+
+      const todo = await todoService.createTodo(reqBody.description, userId)
 
       ctx.body = JSON.stringify({
         payload: {
@@ -53,9 +57,11 @@ class TodoController {
   }
   async updateTodo(ctx) {
     try {
-      const reqBody = JSON.parse(ctx.request.body)
+      const reqBody = ctx.request.body
       const todoId = ctx.params.id
       const userId = ctx.payload.userId
+
+      // ctx.throw(400, { message: 'GG', status: 400 })
 
       const todo = await todoService.updateTodo(todoId, reqBody, userId)
 
@@ -71,7 +77,7 @@ class TodoController {
   }
   async updateTodosCompleted(ctx) {
     try {
-      const reqBody = JSON.parse(ctx.request.body)
+      const reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
       const todos = await todoService.updateTodosCompleted(

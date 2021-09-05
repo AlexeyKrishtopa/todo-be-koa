@@ -8,10 +8,21 @@ const { userRouter } = require('./routers/userRouter')
 const cors = require('@koa/cors')
 const bodyParser = require('koa-body-parser')
 const dotenv = require('dotenv')
+const http = require('http')
+const socket = require('socket.io')
+const { isAuthSocket } = require('./utils/isAuthSocket')
+const todoService = require('./todos/todoService')
 
 dotenv.config()
 
 const app = new Koa()
+const server = http.createServer(app.callback())
+const io = socket(server, {
+  cors: {
+    origin: 'http://localhost:8080',
+    methods: ['GET', 'POST'],
+  },
+})
 
 app.use(logger())
 app.use(cors())
@@ -19,6 +30,41 @@ app.use(json())
 app.use(bodyParser())
 app.use(todoRouter.routes()).use(todoRouter.allowedMethods())
 app.use(userRouter.routes()).use(userRouter.allowedMethods())
+
+io.on('connection', (socket) => {
+  socket.join('room 1')
+
+  socket.use((_, next) => {
+    const { accessToken } = socket.handshake.auth
+
+    if (isAuthSocket(accessToken)) {
+      const payload = accessToken.split('.')[1]
+
+      const decodedPayload = Buffer.from(payload, 'base64')
+
+      socket.payload = JSON.parse(decodedPayload)
+
+      next()
+    } else {
+      next(new Error('unauthorized event'))
+    }
+  })
+
+  socket.on('error', (err) => {
+    if (err) {
+      socket.disconnect()
+    }
+  })
+
+  socket.on('addTodo', async (description) => {
+    const todo = await todoService.createTodo(description, socket.payload.userId)
+    io.to('room 1').emit('todoAdded', todo)
+  })
+})
+
+io.on('connect_error', (error) => {
+  console.log(error.message)
+})
 
 const startApp = async () => {
   try {
@@ -32,7 +78,7 @@ const startApp = async () => {
         console.log(`connected to mongoDb: ${process.env.DB_URL}`)
       }
     )
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`server is working on PORT: ${process.env.PORT}`)
     })
   } catch (error) {

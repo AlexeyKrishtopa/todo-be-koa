@@ -5,32 +5,11 @@ const userController = require('../users/userController')
 const userRouter = new Router()
 
 userRouter
-  .post(
-    '/api/user/signin',
-    userController.signin
-  )
-  .post(
-    '/api/user/signup',
-    userController.signup
-  )
-  .post(
-    '/api/user/refresh-token',
-    userController.refreshTokens
-  )
-  .get(
-    '/api/user',
-    authMiddleware,
-    userController.getUser
-  )
-  .put(
-    '/api/user',
-    authMiddleware,
-    userController.updateUser
-  )
-  .delete(
-    '/api/user/signout',
-    authMiddleware,
-    userController.signout
-  )
+  .post('/api/user/signin', userController.signin)
+  .post('/api/user/signup', userController.signup)
+  .post('/api/user/refresh-token', userController.refreshTokens)
+  .get('/api/user', authMiddleware, userController.getUser)
+  .put('/api/user', authMiddleware, userController.updateUser)
+  .delete('/api/user/signout', authMiddleware, userController.signout)
 
 module.exports = { userRouter }

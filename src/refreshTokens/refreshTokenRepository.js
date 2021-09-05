@@ -17,6 +17,7 @@ class RefreshTokenRepository {
 
   async removeTokens(userId) {
     await RefreshToken.deleteMany({ user: userId })
+    await User.findByIdAndUpdate(userId, { $set: { refreshTokens: [] } })
   }
 
   async isValidToken(userId, refreshToken) {
