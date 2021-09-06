@@ -40,7 +40,9 @@ class TodoService {
     return deletedTodo
   }
   async deleteCompletedTodos(userId) {
-    await todoRepository.deleteCompletedTodos(userId)
+    const restTodos = await todoRepository.deleteCompletedTodos(userId)
+
+    return restTodos
   }
 }
 

@@ -12,6 +12,7 @@ const http = require('http')
 const socket = require('socket.io')
 const { isAuthSocket } = require('./utils/isAuthSocket')
 const todoService = require('./todos/todoService')
+const userService = require('./users/userService')
 
 dotenv.config()
 
@@ -31,34 +32,79 @@ app.use(bodyParser())
 app.use(todoRouter.routes()).use(todoRouter.allowedMethods())
 app.use(userRouter.routes()).use(userRouter.allowedMethods())
 
+io.use((socket, next) => {
+  const { accessToken } = socket.handshake.auth
+
+  if (isAuthSocket(accessToken)) {
+    const payload = accessToken.split('.')[1]
+
+    const decodedPayload = Buffer.from(payload, 'base64')
+
+    socket.payload = JSON.parse(decodedPayload)
+
+    next()
+  } else {
+    next(new Error('unauthorized event'))
+  }
+})
+
 io.on('connection', (socket) => {
-  socket.join('room 1')
-
-  socket.use((_, next) => {
-    const { accessToken } = socket.handshake.auth
-
-    if (isAuthSocket(accessToken)) {
-      const payload = accessToken.split('.')[1]
-
-      const decodedPayload = Buffer.from(payload, 'base64')
-
-      socket.payload = JSON.parse(decodedPayload)
-
-      next()
-    } else {
-      next(new Error('unauthorized event'))
-    }
-  })
-
   socket.on('error', (err) => {
     if (err) {
       socket.disconnect()
     }
   })
 
+  socket.join(socket.payload.userId)
+
   socket.on('addTodo', async (description) => {
-    const todo = await todoService.createTodo(description, socket.payload.userId)
-    io.to('room 1').emit('todoAdded', todo)
+    const todo = await todoService.createTodo(
+      description,
+      socket.payload.userId
+    )
+    io.to(socket.payload.userId).emit('todoAdded', todo)
+  })
+
+  socket.on('removeTodo', async (todoId) => {
+    const todo = await todoService.deleteTodo(todoId, socket.payload.userId)
+    io.to(socket.payload.userId).emit('todoRemoved', todo)
+  })
+
+  socket.on('updateTodo', async (todo) => {
+    const newTodo = await todoService.updateTodo(
+      todo._id,
+      todo,
+      socket.payload.userId
+    )
+    io.to(socket.payload.userId).emit('todoUpdated', newTodo)
+  })
+
+  socket.on('toggleTodos', async (isCompleted) => {
+    const updatedTodos = await todoService.updateTodosCompleted(
+      isCompleted,
+      socket.payload.userId
+    )
+    io.to(socket.payload.userId).emit('todosToggled', updatedTodos)
+  })
+
+  socket.on('clearTodos', async () => {
+    const restTodos = await todoService.deleteCompletedTodos(
+      socket.payload.userId
+    )
+
+    io.to(socket.payload.userId).emit('todosCleared', restTodos)
+  })
+
+  socket.on('dragTodo', async (todo) => {
+    await todoRepoistory.updateTodo(todo._id, todo, socket.payload.userId)
+
+    io.to(socket.payload.userId).emit('todoDragged')
+  })
+
+  socket.on('updateProfile', async (user) => {
+    const newUser = await userService.updateUser(socket.payload.userId, user)
+
+    socket.emit('profileUpdated', newUser)
   })
 })
 

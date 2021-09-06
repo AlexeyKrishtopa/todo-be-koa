@@ -65,9 +65,10 @@ class TodoRepository {
     return deletedTodo
   }
   async deleteCompletedTodos(userId) {
-    
     await Todo.deleteMany({ user: userId, isCompleted: true })
     const todos = await Todo.find({ user: userId })
+
+    const restTodos = await Todo.find({ user: userId })
 
     const todosIds = todos.map((todo) => todo._id)
 
@@ -76,6 +77,8 @@ class TodoRepository {
       { $set: { todos: todosIds } },
       { new: true, useFindAndModify: true }
     )
+
+    return restTodos
   }
 }
 
