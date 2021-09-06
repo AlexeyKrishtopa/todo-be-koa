@@ -26,12 +26,14 @@ class UsersRepository {
 
     return authenticatedUser
   }
-  async updateUser(userId, user) {
-    console.log(user.imgSrc)
-
-    const updatedUser = await User.findByIdAndUpdate(userId, user, {
-      new: true,
-    })
+  async updateUser(userId, user, filePath) {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { ...user, imgSrc: filePath },
+      {
+        new: true,
+      }
+    )
 
     if (!updatedUser) {
       throw new Error(`user with id: ${userId} dosn't exist`)

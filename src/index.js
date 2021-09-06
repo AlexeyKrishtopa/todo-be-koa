@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
   socket.on('updateProfile', async (user) => {
     const newUser = await userService.updateUser(socket.payload.userId, user)
 
-    socket.emit('profileUpdated', newUser)
+    io.to(socket.payload.userId).emit('profileUpdated', newUser)
   })
 })
 
