@@ -127,7 +127,6 @@ class UsersController {
 
       if (!isValidToken) {
         const error = new Error('Invalid refreshToken')
-        error.status = 401
         throw error
       }
 

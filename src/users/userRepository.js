@@ -1,10 +1,6 @@
 const User = require('./User')
 const defaultAvatarSrc = require('../constants/defaultAvatarSrc')
 
-const { Pantry } = require('pantry-cloud')
-
-console.log(Pantry)
-
 class UsersRepository {
   async signup(user) {
     const existUser = await User.findOne({ login: user.login })
