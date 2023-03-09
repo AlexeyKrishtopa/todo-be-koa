@@ -21,7 +21,10 @@ const authMiddleware = (ctx, next) => {
 
     return next()
   } catch (error) {
-    ctx.throw(401, JSON.stringify({ message: error.message, status: 401 }))
+    ctx.throw(
+      401,
+      JSON.stringify({ message: error.message, status: 401 }, null, 2)
+    )
   }
 }
 

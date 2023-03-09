@@ -1,7 +1,7 @@
 const todoService = require('./todoService')
 
 class TodoController {
-  async getAllTodos(ctx) {
+  async getAllTodos (ctx) {
     try {
       // ctx.throw(400, { message: 'GG', status: 400 })
 
@@ -9,34 +9,62 @@ class TodoController {
 
       const todos = await todoService.getAllTodos(userId)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          list: todos,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            list: todos
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      ctx.throw(
+        400,
+        JSON.stringify(
+          {
+            message: error.message,
+            status: 400
+          },
+          null,
+          2
+        )
+      )
     }
   }
-  async getOneTodo(ctx) {
+  async getOneTodo (ctx) {
     try {
       const todoId = ctx.params.id
       const userId = ctx.payload.userId
 
       const todo = await todoService.getOneTodo(todoId, userId)
 
-      ctx.body = JSON.stringify({
-        paylaod: {
-          dto: todo,
+      ctx.body = JSON.stringify(
+        {
+          paylaod: {
+            dto: todo
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      ctx.throw(
+        400,
+        JSON.stringify(
+          {
+            message: error.message,
+            status: 400
+          },
+          null,
+          2
+        )
+      )
     }
   }
-  async createTodo(ctx) {
+  async createTodo (ctx) {
     try {
       const reqBody = ctx.request.body
       const userId = ctx.payload.userId
@@ -45,17 +73,31 @@ class TodoController {
 
       const todo = await todoService.createTodo(reqBody.description, userId)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          dto: todo,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            dto: todo
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      ctx.throw(
+        400,
+        JSON.stringify(
+          {
+            message: error.message,
+            status: 400
+          },
+          null,
+          2
+        )
+      )
     }
   }
-  async updateTodo(ctx) {
+  async updateTodo (ctx) {
     try {
       const reqBody = ctx.request.body
       const todoId = ctx.params.id
@@ -65,17 +107,31 @@ class TodoController {
 
       const todo = await todoService.updateTodo(todoId, reqBody, userId)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          dto: todo,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            dto: todo
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
-      ctx.throw(400, JSON.stringify({ message: error.message, status: 400 }))
+      ctx.throw(
+        400,
+        JSON.stringify(
+          {
+            message: error.message,
+            status: 400
+          },
+          null,
+          2
+        )
+      )
     }
   }
-  async updateTodosCompleted(ctx) {
+  async updateTodosCompleted (ctx) {
     try {
       const reqBody = ctx.request.body
       const userId = ctx.payload.userId
@@ -85,53 +141,77 @@ class TodoController {
         userId
       )
 
-      ctx.body = JSON.stringify({
-        payload: {
-          list: todos,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            list: todos
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async deleteTodo(ctx) {
+  async deleteTodo (ctx) {
     try {
       const todoId = ctx.params.id
       const userId = ctx.payload.userId
 
       const todo = await todoService.deleteTodo(todoId, userId)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          dto: todo,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            dto: todo
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async deleteCompletedTodos(ctx) {
+  async deleteCompletedTodos (ctx) {
     try {
       const userId = ctx.payload.userId
 
       await todoService.deleteCompletedTodos(userId)
 
-      ctx.body = JSON.stringify({
-        message: 'completed was removed',
-        status: 200,
-      })
+      ctx.body = JSON.stringify(
+        {
+          message: 'completed was removed',
+          status: 200
+        },
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }

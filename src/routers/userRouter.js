@@ -10,6 +10,6 @@ userRouter
   .post('/api/user/refresh-token', userController.refreshTokens)
   .get('/api/user', authMiddleware, userController.getUser)
   .put('/api/user', authMiddleware, userController.updateUser)
-  .delete('/api/user/signout', authMiddleware, userController.signout)
+  .post('/api/user/signout', authMiddleware, userController.signout)
 
 module.exports = { userRouter }

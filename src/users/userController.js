@@ -3,14 +3,14 @@ const refreshTokenService = require('../refreshTokens/refreshTokenService')
 const {
   genereteAccessToken,
   genereteRefreshToken,
-  refreshTokens,
+  refreshTokens
 } = require('../utils/jwtHelper')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const tokens = require('../constants/tokens')
 
 class UsersController {
-  async signup(ctx) {
+  async signup (ctx) {
     try {
       let reqBody = ctx.request.body
       const { login, password } = reqBody
@@ -23,29 +23,37 @@ class UsersController {
 
       const newUser = await usersService.signup({
         login: login,
-        password: hashPassword,
+        password: hashPassword
       })
 
-      ctx.body = JSON.stringify({
-        payload: {
-          newUser,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            newUser
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async signin(ctx) {
+  async signin (ctx) {
     try {
       let reqBody = ctx.request.body
       const { login, password } = reqBody
 
       const authenticatedUser = await usersService.signin({
-        login: login,
+        login: login
       })
 
       if (!bcrypt.compareSync(password, authenticatedUser.password)) {
@@ -57,21 +65,29 @@ class UsersController {
 
       await refreshTokenService.appendToken(authenticatedUser._id, refreshToken)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          accessToken,
-          refreshToken,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            accessToken,
+            refreshToken
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async signout(ctx) {
+  async signout (ctx) {
     try {
       const userId = ctx.payload.userId
 
@@ -81,31 +97,43 @@ class UsersController {
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async updateUser(ctx) {
+  async updateUser (ctx) {
     try {
       const reqBody = ctx.request.body
       const userId = ctx.payload.userId
 
       const updatedUser = await usersService.updateUser(userId, reqBody)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          dto: updatedUser,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            dto: updatedUser
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async refreshTokens(ctx) {
+  async refreshTokens (ctx) {
     try {
       let reqBody = ctx.request.body
       const { refreshToken } = reqBody
@@ -138,37 +166,53 @@ class UsersController {
         refreshedTokens.refreshToken
       )
 
-      ctx.body = JSON.stringify({
-        payload: {
-          ...refreshedTokens,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            ...refreshedTokens
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       if (error.message === 'jwt expired') {
         error.status = 401
       }
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
-  async getUser(ctx) {
+  async getUser (ctx) {
     try {
       const userId = ctx.payload.userId
       const user = await usersService.getUser(userId)
 
-      ctx.body = JSON.stringify({
-        payload: {
-          dto: user,
+      ctx.body = JSON.stringify(
+        {
+          payload: {
+            dto: user
+          },
+          status: 200
         },
-        status: 200,
-      })
+        null,
+        2
+      )
     } catch (error) {
       ctx.throw(
         error.status || 400,
-        JSON.stringify({ message: error.message, status: error.status || 400 })
+        JSON.stringify(
+          { message: error.message, status: error.status || 400 },
+          null,
+          2
+        )
       )
     }
   }
