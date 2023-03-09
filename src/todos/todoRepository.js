@@ -2,39 +2,35 @@ const Todo = require('./Todo')
 const User = require('../users/User')
 
 class TodoRepository {
-  async getAllTodos(userId) {
-    const todos = await Todo.find({ user: userId })
+  async getAllTodos () {
+    const todos = await Todo.find()
+
     return todos
   }
-  async getOneTodo(id, userId) {
-    const newTodo = await Todo.findOne({ _id: id, user: userId })
+  async getOneTodo (id) {
+    const newTodo = await Todo.findOne({ _id: id })
+
     if (!newTodo) {
       throw new Error(`todo with id: ${id} dosn't exist`)
     }
+
     return newTodo
   }
-  async createTodo(todo) {
+  async createTodo (todo) {
     const newTodo = await Todo.create(todo)
 
-    await User.findByIdAndUpdate(
-      newTodo.user,
-      { $push: { todos: newTodo._id } },
-      { new: true, useFindAndModify: false }
-    )
-
     return newTodo
   }
-  async updateTodo(id, todo, userId) {
+  async updateTodo (id, todo) {
     const updatedTodo = await Todo.findByIdAndUpdate(
       id,
       {
         description: todo.description,
         isCompleted: todo.isCompleted,
-        sort: todo.sort,
-        user: userId,
+        sort: todo.sort
       },
       {
-        new: true,
+        new: true
       }
     )
 
@@ -43,40 +39,25 @@ class TodoRepository {
     }
     return updatedTodo
   }
-  async updateTodosCompleted(isCompleted, userId) {
-    await Todo.updateMany({ user: userId }, { $set: { isCompleted } })
+  async updateTodosCompleted (isCompleted) {
+    await Todo.updateMany({}, { $set: { isCompleted } })
 
-    const updatedTodos = await Todo.find({ user: userId })
+    const updatedTodos = await Todo.find()
 
     return updatedTodos
   }
-  async deleteTodo(id, userId) {
+  async deleteTodo (id) {
     const deletedTodo = await Todo.findByIdAndDelete(id)
-
-    await User.findByIdAndUpdate(
-      userId,
-      { $pull: { todos: id } },
-      { new: true, useFindAndModify: true }
-    )
 
     if (!deletedTodo) {
       throw new Error(`todo with id: ${id} dosn't exist`)
     }
     return deletedTodo
   }
-  async deleteCompletedTodos(userId) {
-    await Todo.deleteMany({ user: userId, isCompleted: true })
-    const todos = await Todo.find({ user: userId })
+  async deleteCompletedTodos () {
+    await Todo.deleteMany({ isCompleted: true })
 
-    const restTodos = await Todo.find({ user: userId })
-
-    const todosIds = todos.map((todo) => todo._id)
-
-    await User.findByIdAndUpdate(
-      userId,
-      { $set: { todos: todosIds } },
-      { new: true, useFindAndModify: true }
-    )
+    const restTodos = await Todo.find()
 
     return restTodos
   }
